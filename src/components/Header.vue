@@ -14,11 +14,12 @@
           <router-link to="/stocks" class="nav-link" active-class="active">Stocks</router-link>
         </li>
       </ul>
+      
       <ul class="nav navbar-nav navbar-right">
         <li class="nav-item">
-          <a href="" class="nav-link">End Day</a>
+          <a href="#" @click="endDay" class="nav-link">End Day</a>
         </li>
-        <li class="nav-item dropdown">
+        <!-- <li class="nav-item dropdown">
           <a 
             class="nav-link dropdown-toggle" 
             href="#" 
@@ -33,11 +34,50 @@
             <a class="dropdown-item" href="#">Save Data</a>
             <a class="dropdown-item" href="#">Load Data</a>
           </div>
-        </li>
+        </li> -->
+        <li class="nav-item"><a href="#" class="nav-link" @click="saveData">Save Data</a></li>
+        <li class="nav-item"><a href="#" class="nav-link" @click="loadData">Load Data</a></li>
       </ul>
+      <strong class="navbar-text nabvbar-right">Funds: {{ funds | currency }}</strong>
     </div>
   </nav>
 </template>
+
+<script>
+import {mapActions} from 'vuex';
+export default {
+  // data() {
+  //   return {
+  //     isDropdownOpen: false
+  //   }
+  // },
+  computed: {
+    funds() {
+      return this.$store.getters.funds;
+    }
+  },
+  methods: {
+    ...mapActions({
+      randomizeStocks: 'randomizeStocks',
+      fetchData: 'loadData'
+    }),
+    endDay() {
+      this.randomizeStocks();
+    },
+    saveData() {
+      const data = {
+        funds: this.$store.getters.funds,
+        stockPortfolio: this.$store.getters.stockPortfolio,
+        stocks: this.$store.getters.stocks
+      };
+      this.$http.put('data.json', data);
+    },
+    loadData() {
+      this.fetchData();
+    }
+  }
+}
+</script>
 
 <style>
   .active {
